@@ -7,8 +7,8 @@ const CheckoutSubmit=require('../model/CheckoutSubmit');
 const CheckoutSubmitInsert=async(req,res)=>{
 
     try{
-          const {checkin,checkout,adults,Children,fname,lname,email,phone,city,code,guests,night,totalprice,paymentID,children,price}=req.body;
-          const data=await new CheckoutSubmit({checkin,checkout,adults,Children,fname,lname,email,phone,city,code,guests,night,totalprice,paymentID,children,price});
+          const {roomname,checkin,checkout,adults,Children,fname,lname,email,phone,city,code,guests,night,totalprice,paymentID,children,price}=req.body;
+          const data=await new CheckoutSubmit({roomname,checkin,checkout,adults,Children,fname,lname,email,phone,city,code,guests,night,totalprice,paymentID,children,price});
           const saveData=await data.save();
           res.send({"Checkout insert success":true,saveData})
 

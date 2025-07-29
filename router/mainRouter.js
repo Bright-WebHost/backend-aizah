@@ -4,7 +4,7 @@ const { CheckoutInsert, CheckoutView, CheckoutUpdate, CheckoutDelete } = require
 const Razorpay = require('../model/Razorpay');
 const { Keyinsert, KeyView, KeyUpdate } = require('../controller/razorpayController');
 const { CheckoutSubmitInsert, CheckoutSubmitView } = require('../controller/checkoutSubmit');
-const { priceInsert, priceView, priceUpdate } = require('../controller/priceController');
+const { priceInsert, priceView, priceUpdate, priceRangeDelete } = require('../controller/priceController');
 
 const router=express.Router();
 
@@ -41,6 +41,7 @@ router.get('/chekoutSubmitview',CheckoutSubmitView);
 router.post('/priceInsert',priceInsert)
 router.get('/priceView/:id',priceView)
 router.put('/priceUpadte',priceUpdate);
+router.delete('/priceDelete', priceRangeDelete);
 
 
 

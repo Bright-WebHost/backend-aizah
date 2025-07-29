@@ -3,6 +3,9 @@ const {Schema} =mongoose;
 
 
 const CheckoutSubmit= new Schema({
+  roomname:{
+        type:String
+    },
     checkin:{
         type:String
     },
