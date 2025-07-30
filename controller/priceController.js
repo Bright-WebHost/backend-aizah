@@ -4,39 +4,6 @@ app.use(express.json());
 const RoomPrice = require('../model/roomPriceSchema');
 
 // Insert new room price data
-// const priceInsert = async (req, res) => {
-//   try {
-//     const { roomName, prices } = req.body;
-
-//     if (!roomName || !prices) {
-//       return res.status(400).json({ error: "Missing roomName or prices" });
-//     }
-
-//     const allMonths = ['jan', 'feb', 'mar', 'apr', 'may', 'jun', 'jul', 'aug', 'sep', 'oct', 'nov', 'dec'];
-//     const fullPrices = allMonths.reduce((acc, month) => {
-//       acc[month] = prices[month] || { basePrice: 0, ranges: [] };
-//       return acc;
-//     }, {});
-
-//     const newRoomPrice = new RoomPrice({
-//       roomName,
-//       prices: fullPrices
-//     });
-
-//     const result = await newRoomPrice.save();
-//     res.status(201).json(result);
-//   } catch (err) {
-//     console.error("Insert failed:", err);
-//     res.status(500).json({ 
-//       error: "Failed to insert prices", 
-//       details: err.message 
-//     });
-//   }
-// };
-
-
-
-
 const priceInsert = async (req, res) => {
   try {
     const { roomName, prices } = req.body;
@@ -45,48 +12,16 @@ const priceInsert = async (req, res) => {
       return res.status(400).json({ error: "Missing roomName or prices" });
     }
 
-    // Validate room name
-    const validRooms = ['Merano-1710', 'Majestine-618', 'Reva-1811', 'Merano-2906'];
-    if (!validRooms.includes(roomName)) {
-      return res.status(400).json({ error: "Invalid room name" });
-    }
-
-    // Prepare the full prices object with defaults
     const allMonths = ['jan', 'feb', 'mar', 'apr', 'may', 'jun', 'jul', 'aug', 'sep', 'oct', 'nov', 'dec'];
-    const fullPrices = {};
-    
-    allMonths.forEach(month => {
-      // Ensure we have valid data for each month
-      if (prices[month] && typeof prices[month] === 'object') {
-        fullPrices[month] = {
-          basePrice: Number(prices[month].basePrice) || 0,
-          ranges: Array.isArray(prices[month].ranges) 
-            ? prices[month].ranges.map(range => ({
-                startDate: String(range.startDate),
-                endDate: String(range.endDate),
-                price: Number(range.price)
-              }))
-            : []
-        };
-      } else {
-        fullPrices[month] = { basePrice: 0, ranges: [] };
-      }
-    });
+    const fullPrices = allMonths.reduce((acc, month) => {
+      acc[month] = prices[month] || { basePrice: 0, ranges: [] };
+      return acc;
+    }, {});
 
-    // Create new document
     const newRoomPrice = new RoomPrice({
       roomName,
       prices: fullPrices
     });
-
-    // Validate before saving
-    const validationError = newRoomPrice.validateSync();
-    if (validationError) {
-      return res.status(400).json({ 
-        error: "Validation failed",
-        details: validationError.errors 
-      });
-    }
 
     const result = await newRoomPrice.save();
     res.status(201).json(result);

@@ -17,6 +17,7 @@ const roomPriceSchema = new Schema({
     type: String,
     enum: ['Merano-1710', 'Majestine-618', 'Reva-1811', 'Merano-2906'],
     required: true,
+    unique: true
   },
   prices: {
     jan: { type: monthDataSchema, default: () => ({ basePrice: 0, ranges: [] }) },
