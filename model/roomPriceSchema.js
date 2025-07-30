@@ -67,34 +67,27 @@ const roomPriceSchema = new Schema({
     unique: true
   },
   prices: {
-    jan: { type: monthDataSchema, default: () => ({ basePrice: 0, ranges: [] }) },
-    feb: { type: monthDataSchema, default: () => ({ basePrice: 0, ranges: [] }) },
-    mar: { type: monthDataSchema, default: () => ({ basePrice: 0, ranges: [] }) },
-    apr: { type: monthDataSchema, default: () => ({ basePrice: 0, ranges: [] }) },
-    may: { type: monthDataSchema, default: () => ({ basePrice: 0, ranges: [] }) },
-    jun: { type: monthDataSchema, default: () => ({ basePrice: 0, ranges: [] }) },
-    jul: { type: monthDataSchema, default: () => ({ basePrice: 0, ranges: [] }) },
-    aug: { type: monthDataSchema, default: () => ({ basePrice: 0, ranges: [] }) },
-    sep: { type: monthDataSchema, default: () => ({ basePrice: 0, ranges: [] }) },
-    oct: { type: monthDataSchema, default: () => ({ basePrice: 0, ranges: [] }) },
-    nov: { type: monthDataSchema, default: () => ({ basePrice: 0, ranges: [] }) },
-    dec: { type: monthDataSchema, default: () => ({ basePrice: 0, ranges: [] }) }
+    type: Map,
+    of: monthDataSchema,
+    default: () => ({
+      jan: { basePrice: 0, ranges: [] },
+      feb: { basePrice: 0, ranges: [] },
+      mar: { basePrice: 0, ranges: [] },
+      apr: { basePrice: 0, ranges: [] },
+      may: { basePrice: 0, ranges: [] },
+      jun: { basePrice: 0, ranges: [] },
+      jul: { basePrice: 0, ranges: [] },
+      aug: { basePrice: 0, ranges: [] },
+      sep: { basePrice: 0, ranges: [] },
+      oct: { basePrice: 0, ranges: [] },
+      nov: { basePrice: 0, ranges: [] },
+      dec: { basePrice: 0, ranges: [] }
+    })
   },
   updatedAt: { type: Date, default: Date.now }
 }, {
   // Enable optimistic concurrency control
   optimisticConcurrency: true
-});
-
-// Ensure all months exist before saving
-roomPriceSchema.pre('save', function (next) {
-  const months = ['jan', 'feb', 'mar', 'apr', 'may', 'jun', 'jul', 'aug', 'sep', 'oct', 'nov', 'dec'];
-  months.forEach(month => {
-    if (!this.prices[month]) {
-      this.prices[month] = { basePrice: 0, ranges: [] };
-    }
-  });
-  next();
 });
 
 // Index for faster queries
