@@ -2,14 +2,61 @@ const mongoose = require('mongoose');
 const { Schema } = mongoose;
 
 const dateRangeSchema = new Schema({
-  startDate: { type: String, required: true },  // Format: YYYY-MM-DD
-  endDate: { type: String, required: true },
-  price: { type: Number, required: true }
+  startDate: { 
+    type: String, 
+    required: true,
+    validate: {
+      validator: function(v) {
+        return /^\d{4}-\d{2}-\d{2}$/.test(v);
+      },
+      message: props => `${props.value} is not a valid date format (YYYY-MM-DD)!`
+    }
+  },
+  endDate: { 
+    type: String, 
+    required: true,
+    validate: {
+      validator: function(v) {
+        return /^\d{4}-\d{2}-\d{2}$/.test(v);
+      },
+      message: props => `${props.value} is not a valid date format (YYYY-MM-DD)!`
+    }
+  },
+  price: { 
+    type: Number, 
+    required: true,
+    min: [0, 'Price must be positive']
+  }
 });
 
 const monthDataSchema = new Schema({
-  basePrice: { type: Number, default: 0 },
-  ranges: [dateRangeSchema]
+  basePrice: { 
+    type: Number, 
+    default: 0,
+    min: [0, 'Base price must be positive']
+  },
+  ranges: {
+    type: [dateRangeSchema],
+    validate: {
+      validator: function(ranges) {
+        // Check for overlapping date ranges
+        for (let i = 0; i < ranges.length; i++) {
+          for (let j = i + 1; j < ranges.length; j++) {
+            const aStart = new Date(ranges[i].startDate);
+            const aEnd = new Date(ranges[i].endDate);
+            const bStart = new Date(ranges[j].startDate);
+            const bEnd = new Date(ranges[j].endDate);
+            
+            if (aStart <= bEnd && bStart <= aEnd) {
+              return false;
+            }
+          }
+        }
+        return true;
+      },
+      message: 'Date ranges must not overlap within the same month'
+    }
+  }
 });
 
 const roomPriceSchema = new Schema({
@@ -34,6 +81,9 @@ const roomPriceSchema = new Schema({
     dec: { type: monthDataSchema, default: () => ({ basePrice: 0, ranges: [] }) }
   },
   updatedAt: { type: Date, default: Date.now }
+}, {
+  // Enable optimistic concurrency control
+  optimisticConcurrency: true
 });
 
 // Ensure all months exist before saving
@@ -46,5 +96,8 @@ roomPriceSchema.pre('save', function (next) {
   });
   next();
 });
+
+// Index for faster queries
+roomPriceSchema.index({ roomName: 1 }, { unique: true });
 
 module.exports = mongoose.model('RoomPrice', roomPriceSchema);
