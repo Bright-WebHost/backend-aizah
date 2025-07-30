@@ -17,21 +17,20 @@ const roomPriceSchema = new Schema({
     type: String,
     enum: ['Merano-1710', 'Majestine-618', 'Reva-1811', 'Merano-2906'],
     required: true,
-    unique: true
   },
   prices: {
-    jan: { type: monthDataSchema, default: () => ({ basePrice: 0, ranges: [] }) },
-    feb: { type: monthDataSchema, default: () => ({ basePrice: 0, ranges: [] }) },
-    mar: { type: monthDataSchema, default: () => ({ basePrice: 0, ranges: [] }) },
-    apr: { type: monthDataSchema, default: () => ({ basePrice: 0, ranges: [] }) },
-    may: { type: monthDataSchema, default: () => ({ basePrice: 0, ranges: [] }) },
-    jun: { type: monthDataSchema, default: () => ({ basePrice: 0, ranges: [] }) },
-    jul: { type: monthDataSchema, default: () => ({ basePrice: 0, ranges: [] }) },
-    aug: { type: monthDataSchema, default: () => ({ basePrice: 0, ranges: [] }) },
-    sep: { type: monthDataSchema, default: () => ({ basePrice: 0, ranges: [] }) },
-    oct: { type: monthDataSchema, default: () => ({ basePrice: 0, ranges: [] }) },
-    nov: { type: monthDataSchema, default: () => ({ basePrice: 0, ranges: [] }) },
-    dec: { type: monthDataSchema, default: () => ({ basePrice: 0, ranges: [] }) }
+    jan: monthDataSchema,
+    feb: monthDataSchema,
+    mar: monthDataSchema,
+    apr: monthDataSchema,
+    may: monthDataSchema,
+    jun: monthDataSchema,
+    jul: monthDataSchema,
+    aug: monthDataSchema,
+    sep: monthDataSchema,
+    oct: monthDataSchema,
+    nov: monthDataSchema,
+    dec: monthDataSchema
   },
   updatedAt: { type: Date, default: Date.now }
 });
