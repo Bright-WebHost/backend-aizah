@@ -20,7 +20,7 @@ const preparePriceData = (prices) => {
             endDate: String(range.endDate),
             price: Number(range.price) || 0
           }))
-        : [];
+        : []);
       
       fullPrices[month] = { basePrice, ranges };
     } else {
