@@ -34,7 +34,6 @@ const priceInsert = async (req, res) => {
   }
 };
 
-
 // View room price by ID
 const priceView = async (req, res) => {
   try {

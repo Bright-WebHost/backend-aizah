@@ -1,35 +1,49 @@
 const mongoose = require('mongoose');
+const { Schema } = mongoose;
 
-const rangeSchema = new mongoose.Schema({
-  startDate: { type: String, required: true },
+const dateRangeSchema = new Schema({
+  startDate: { type: String, required: true },  // Format: YYYY-MM-DD
   endDate: { type: String, required: true },
-  price: { type: Number, required: true },
+  price: { type: Number, required: true }
 });
 
-const monthPriceSchema = new mongoose.Schema({
-  basePrice: { type: Number, required: true },
-  ranges: { type: [rangeSchema], default: [] },
+const monthDataSchema = new Schema({
+  basePrice: { type: Number, default: 0 },
+  ranges: [dateRangeSchema]
 });
 
-const pricesSchema = new mongoose.Schema({
-  jan: { type: monthPriceSchema, required: true },
-  feb: { type: monthPriceSchema, required: true },
-  mar: { type: monthPriceSchema, required: true },
-  apr: { type: monthPriceSchema, required: true },
-  may: { type: monthPriceSchema, required: true },
-  jun: { type: monthPriceSchema, required: true },
-  jul: { type: monthPriceSchema, required: true },
-  aug: { type: monthPriceSchema, required: true },
-  sep: { type: monthPriceSchema, required: true },
-  oct: { type: monthPriceSchema, required: true },
-  nov: { type: monthPriceSchema, required: true },
-  dec: { type: monthPriceSchema, required: true },
+const roomPriceSchema = new Schema({
+  roomName: {
+    type: String,
+    enum: ['Merano-1710', 'Majestine-618', 'Reva-1811', 'Merano-2906'],
+    required: true,
+  },
+  prices: {
+    jan: { type: monthDataSchema, default: () => ({ basePrice: 0, ranges: [] }) },
+    feb: { type: monthDataSchema, default: () => ({ basePrice: 0, ranges: [] }) },
+    mar: { type: monthDataSchema, default: () => ({ basePrice: 0, ranges: [] }) },
+    apr: { type: monthDataSchema, default: () => ({ basePrice: 0, ranges: [] }) },
+    may: { type: monthDataSchema, default: () => ({ basePrice: 0, ranges: [] }) },
+    jun: { type: monthDataSchema, default: () => ({ basePrice: 0, ranges: [] }) },
+    jul: { type: monthDataSchema, default: () => ({ basePrice: 0, ranges: [] }) },
+    aug: { type: monthDataSchema, default: () => ({ basePrice: 0, ranges: [] }) },
+    sep: { type: monthDataSchema, default: () => ({ basePrice: 0, ranges: [] }) },
+    oct: { type: monthDataSchema, default: () => ({ basePrice: 0, ranges: [] }) },
+    nov: { type: monthDataSchema, default: () => ({ basePrice: 0, ranges: [] }) },
+    dec: { type: monthDataSchema, default: () => ({ basePrice: 0, ranges: [] }) }
+  },
+  updatedAt: { type: Date, default: Date.now }
 });
 
-const RoomPriceSchema = new mongoose.Schema({
-  roomName: { type: String, required: true },
-  prices: { type: pricesSchema, required: true },
+// Ensure all months exist before saving
+roomPriceSchema.pre('save', function (next) {
+  const months = ['jan', 'feb', 'mar', 'apr', 'may', 'jun', 'jul', 'aug', 'sep', 'oct', 'nov', 'dec'];
+  months.forEach(month => {
+    if (!this.prices[month]) {
+      this.prices[month] = { basePrice: 0, ranges: [] };
+    }
+  });
+  next();
 });
 
-const RoomPrice = mongoose.model('RoomPrice', RoomPriceSchema);
-module.exports = RoomPrice;
+module.exports = mongoose.model('RoomPrice', roomPriceSchema);
