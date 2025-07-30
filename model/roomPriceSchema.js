@@ -2,47 +2,28 @@ const mongoose = require('mongoose');
 const { Schema } = mongoose;
 
 const dateRangeSchema = new Schema({
-  startDate: { type: String, required: true },
+  startDate: { type: String, required: true }, // Format: YYYY-MM-DD
   endDate: { type: String, required: true },
   price: { type: Number, required: true }
-});
+}, { _id: false });
 
 const monthDataSchema = new Schema({
   basePrice: { type: Number, default: 0 },
   ranges: { type: [dateRangeSchema], default: [] }
-});
+}, { _id: false });
 
 const roomPriceSchema = new Schema({
   roomName: {
     type: String,
     enum: ['Merano-1710', 'Majestine-618', 'Reva-1811', 'Merano-2906'],
-    required: true,
-    unique: true
+    required: true
   },
   prices: {
-    jan: { type: monthDataSchema, default: { basePrice: 0, ranges: [] } },
-    feb: { type: monthDataSchema, default: { basePrice: 0, ranges: [] } },
-    mar: { type: monthDataSchema, default: { basePrice: 0, ranges: [] } },
-    apr: { type: monthDataSchema, default: { basePrice: 0, ranges: [] } },
-    may: { type: monthDataSchema, default: { basePrice: 0, ranges: [] } },
-    jun: { type: monthDataSchema, default: { basePrice: 0, ranges: [] } },
-    jul: { type: monthDataSchema, default: { basePrice: 0, ranges: [] } },
-    aug: { type: monthDataSchema, default: { basePrice: 0, ranges: [] } },
-    sep: { type: monthDataSchema, default: { basePrice: 0, ranges: [] } },
-    oct: { type: monthDataSchema, default: { basePrice: 0, ranges: [] } },
-    nov: { type: monthDataSchema, default: { basePrice: 0, ranges: [] } },
-    dec: { type: monthDataSchema, default: { basePrice: 0, ranges: [] } }
+    type: Map,
+    of: monthDataSchema,
+    default: () => new Map()
   },
   updatedAt: { type: Date, default: Date.now }
-}, {
-  // Strict validation
-  strict: 'throw',
-  // Auto-create timestamps
-  timestamps: true
 });
-
-// Add indexes for better performance
-roomPriceSchema.index({ roomName: 1 });
-roomPriceSchema.index({ updatedAt: -1 });
 
 module.exports = mongoose.model('RoomPrice', roomPriceSchema);
