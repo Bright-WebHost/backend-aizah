@@ -1,43 +1,35 @@
 const mongoose = require('mongoose');
-const { Schema } = mongoose;
 
-const dateRangeSchema = new Schema({
-  startDate: { type: String, required: true }, // Format: YYYY-MM-DD
+const rangeSchema = new mongoose.Schema({
+  startDate: { type: String, required: true },
   endDate: { type: String, required: true },
-  price: { type: Number, required: true }
-}, { _id: false });
-
-const monthDataSchema = new Schema({
-  basePrice: { type: Number, default: 0 },
-  ranges: { type: [dateRangeSchema], default: [] }
-}, { _id: false });
-
-const pricesSchema = new Schema({
-  jan: { type: monthDataSchema, required: true },
-  feb: { type: monthDataSchema, required: true },
-  mar: { type: monthDataSchema, required: true },
-  apr: { type: monthDataSchema, required: true },
-  may: { type: monthDataSchema, required: true },
-  jun: { type: monthDataSchema, required: true },
-  jul: { type: monthDataSchema, required: true },
-  aug: { type: monthDataSchema, required: true },
-  sep: { type: monthDataSchema, required: true },
-  oct: { type: monthDataSchema, required: true },
-  nov: { type: monthDataSchema, required: true },
-  dec: { type: monthDataSchema, required: true },
-}, { _id: false });
-
-const roomPriceSchema = new Schema({
-  roomName: {
-    type: String,
-    enum: ['Merano-1710', 'Majestine-618', 'Reva-1811', 'Merano-2906'],
-    required: true
-  },
-  prices: {
-    type: pricesSchema,
-    required: true
-  },
-  updatedAt: { type: Date, default: Date.now }
+  price: { type: Number, required: true },
 });
 
-module.exports = mongoose.model('RoomPrice', roomPriceSchema);
+const monthPriceSchema = new mongoose.Schema({
+  basePrice: { type: Number, required: true },
+  ranges: { type: [rangeSchema], default: [] },
+});
+
+const pricesSchema = new mongoose.Schema({
+  jan: { type: monthPriceSchema, required: true },
+  feb: { type: monthPriceSchema, required: true },
+  mar: { type: monthPriceSchema, required: true },
+  apr: { type: monthPriceSchema, required: true },
+  may: { type: monthPriceSchema, required: true },
+  jun: { type: monthPriceSchema, required: true },
+  jul: { type: monthPriceSchema, required: true },
+  aug: { type: monthPriceSchema, required: true },
+  sep: { type: monthPriceSchema, required: true },
+  oct: { type: monthPriceSchema, required: true },
+  nov: { type: monthPriceSchema, required: true },
+  dec: { type: monthPriceSchema, required: true },
+});
+
+const RoomPriceSchema = new mongoose.Schema({
+  roomName: { type: String, required: true },
+  prices: { type: pricesSchema, required: true },
+});
+
+const RoomPrice = mongoose.model('RoomPrice', RoomPriceSchema);
+module.exports = RoomPrice;
