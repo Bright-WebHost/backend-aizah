@@ -8,28 +8,41 @@ const priceInsert = async (req, res) => {
   try {
     const { roomName, prices } = req.body;
 
-    if (!roomName || !prices) {
-      return res.status(400).json({ error: "Missing roomName or prices" });
+    // Validate required fields
+    if (!roomName || typeof prices !== "object") {
+      return res.status(400).json({ error: "Missing or invalid roomName or prices" });
     }
 
-    const allMonths = ['jan', 'feb', 'mar', 'apr', 'may', 'jun', 'jul', 'aug', 'sep', 'oct', 'nov', 'dec'];
-    const fullPrices = allMonths.reduce((acc, month) => {
-      acc[month] = prices[month] || { basePrice: 0, ranges: [] };
-      return acc;
-    }, {});
+    const allMonths = [
+      "jan", "feb", "mar", "apr", "may", "jun",
+      "jul", "aug", "sep", "oct", "nov", "dec"
+    ];
 
+    // Build fullPrices with fallback if any month is missing
+    const fullPrices = {};
+    for (const month of allMonths) {
+      const monthData = prices[month];
+      fullPrices[month] = {
+        basePrice: monthData?.basePrice ?? 0,
+        ranges: Array.isArray(monthData?.ranges) ? monthData.ranges : []
+      };
+    }
+
+    // Save to DB
     const newRoomPrice = new RoomPrice({
       roomName,
       prices: fullPrices
     });
 
     const result = await newRoomPrice.save();
-    res.status(201).json(result);
+    res.status(201).json({ success: true, message: "Room prices inserted", data: result });
+
   } catch (err) {
     console.error("Insert failed:", err);
-    res.status(500).json({ 
-      error: "Failed to insert prices", 
-      details: err.message 
+    res.status(500).json({
+      success: false,
+      error: "Failed to insert room prices",
+      details: err.message
     });
   }
 };
