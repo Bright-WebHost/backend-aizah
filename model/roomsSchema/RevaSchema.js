@@ -1,0 +1,62 @@
+  const mongoose =require('mongoose');
+const {Schema} =mongoose;
+
+
+const RevaSchema= new Schema({
+    roomname:{
+        type:String
+    },
+    checkin:{
+        type:String
+    },
+    checkout:{
+        type:String
+    },
+    postbook:{
+       type:String 
+    },
+    adults:{
+        type:String
+    },
+    guests:{
+           type:String
+    },
+    children:{
+         type:String
+    },
+    fname:{
+        type:String
+    },
+    lname:{
+        type:String
+    },
+    email:{
+        type:String
+    },
+    phone:{
+        type:Number
+    },
+    city:{
+        type:String
+    },
+    code:{
+        type:Number
+    },
+    price:{
+        type:String
+    },
+    night:{
+      type:String
+    },
+    totalprice:{
+       type:String
+    },
+    paymentID:{
+        type:String
+    },
+      currentDate:{
+        type:Date,
+        default:Date.now
+    }
+})
+module.exports=mongoose.model("Reva",RevaSchema);
