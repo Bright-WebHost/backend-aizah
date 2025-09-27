@@ -15,7 +15,7 @@ const monthDataSchema = new Schema({
 const roomPriceSchema = new Schema({
   roomName: {
     type: String,
-    enum: ['Merano-1710', 'Majestine-618', 'Reva-1811', 'Merano-2906'],
+    enum: ['Merano-1710', 'Majestine-618', 'Reva-1811', 'Merano-2906','NandhiHills','PenthouseParisian','FramhouseWithPool'],
     required: true,
     unique: true
   },
